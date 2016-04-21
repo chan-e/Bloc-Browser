@@ -58,21 +58,7 @@
     [self.reloadButton  setTitle:NSLocalizedString(@"Refresh", @"Reload command")
                         forState:UIControlStateNormal];
     
-    [self.backButton    addTarget:self.webView
-                           action:@selector(goBack)
-                 forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.forwardButton addTarget:self.webView
-                           action:@selector(goForward)
-                 forControlEvents:UIControlEventTouchUpInside];
-
-    [self.stopButton    addTarget:self.webView
-                           action:@selector(stopLoading)
-                 forControlEvents:UIControlEventTouchUpInside];
-
-    [self.reloadButton  addTarget:self.webView
-                           action:@selector(reload)
-                 forControlEvents:UIControlEventTouchUpInside];
+    [self addButtonTargets];
 
     UIView *mainView = [UIView new];
     
@@ -193,7 +179,44 @@
     self.backButton.enabled    = [self.webView canGoBack];
     self.forwardButton.enabled = [self.webView canGoForward];
     self.stopButton.enabled    =  self.webView.isLoading;
-    self.reloadButton.enabled  = !self.webView.isLoading;
+    self.reloadButton.enabled  = !self.webView.isLoading && self.webView.URL;
+}
+
+- (void)addButtonTargets {
+    for (UIButton *button in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+        [button removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [self.backButton    addTarget:self.webView
+                           action:@selector(goBack)
+                 forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.forwardButton addTarget:self.webView
+                           action:@selector(goForward)
+                 forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.stopButton    addTarget:self.webView
+                           action:@selector(stopLoading)
+                 forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.reloadButton  addTarget:self.webView
+                           action:@selector(reload)
+                 forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)resetWebView {
+    [self.webView removeFromSuperview];
+    
+    self.webView                    = [[WKWebView alloc] init];
+    self.webView.navigationDelegate = self;
+    
+    [self.view addSubview:self.webView];
+    
+    [self addButtonTargets];
+    
+    self.textField.text = nil;
+    
+    [self updateButtonsAndTitle];
 }
 
 @end
