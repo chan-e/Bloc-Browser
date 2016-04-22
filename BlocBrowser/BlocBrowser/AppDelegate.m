@@ -26,6 +26,22 @@
     
     [self.window makeKeyAndVisible];
     
+    // Display a welcome message when the user launches the app.
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Welcome", @"Welcome")
+                                                                   message:@"Web Browser by Bloc"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction  = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:nil];
+    
+    [alert addAction:okAction];
+    
+    UINavigationController *navigationVC = (UINavigationController *)self.window.rootViewController;
+    ViewController *browserVC = [[navigationVC viewControllers] firstObject];
+    
+    [browserVC presentViewController:alert animated:YES completion:nil];
+    
     return YES;
 }
 
