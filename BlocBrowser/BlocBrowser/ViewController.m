@@ -75,14 +75,22 @@
     // First, calculate some dimensions.
     static const CGFloat itemHeight = 50;
     
+    CGFloat height        = CGRectGetHeight(self.view.bounds);
     CGFloat width         = CGRectGetWidth(self.view.bounds);
     CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
-
+    
     // Now, assign the frames.
     self.textField.frame  = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame    = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
+    // Put the toolbar in the middle of the browser.
+    CGFloat toolbarheight = 60;
+    CGFloat toolbarWidth  = 280;
+    
+    self.awesomeToolbar.frame = CGRectMake((width  / 2.0) - (toolbarWidth  / 2.0),
+                                           (height / 2.0) - (toolbarheight / 2.0),
+                                           toolbarWidth,
+                                           toolbarheight);
 }
 
 #pragma mark - UITextFieldDelegate
@@ -142,13 +150,13 @@
 #pragma mark - AwesomeFloatingToolbarDelegate
 
 - (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title {
-    if        ([title isEqual:NSLocalizedString(@"Back"   , @"Back command")]) {
+    if        ([title isEqual:kWebBrowserBackString]) {
         [self.webView goBack];
-    } else if ([title isEqual:NSLocalizedString(@"Forward", @"Forward command")]) {
+    } else if ([title isEqual:kWebBrowserForwardString]) {
         [self.webView goForward];
-    } else if ([title isEqual:NSLocalizedString(@"Stop"   , @"Stop command")]) {
+    } else if ([title isEqual:kWebBrowserStopString]) {
         [self.webView stopLoading];
-    } else if ([title isEqual:NSLocalizedString(@"Refresh", @"Reload command")]) {
+    } else if ([title isEqual:kWebBrowserRefreshString]) {
         [self.webView reload];
     }
 }
