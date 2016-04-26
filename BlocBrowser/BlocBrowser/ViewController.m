@@ -46,6 +46,7 @@
                                              initWithFourTitles:@[kWebBrowserBackString, kWebBrowserForwardString,
                                                                   kWebBrowserStopString, kWebBrowserRefreshString]];
     self.awesomeToolbar.delegate          = self;
+    self.awesomeToolbar.frame             = CGRectMake(20, 100, 280, 60);
     
     UIView *mainView = [UIView new];
     
@@ -81,8 +82,6 @@
     // Now, assign the frames.
     self.textField.frame  = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame    = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-    
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
 }
 
 #pragma mark - UITextFieldDelegate
@@ -160,6 +159,31 @@
 
     CGRect  potentialNewFrame = CGRectMake(newPoint.x, newPoint.y,
                                           CGRectGetWidth(toolbar.frame), CGRectGetHeight(toolbar.frame));
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+        toolbar.frame = potentialNewFrame;
+    }
+}
+
+- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
+    CGRect frame       = toolbar.frame;
+    
+    CGFloat oldOriginX = frame.origin.x;
+    CGFloat oldOriginY = frame.origin.y;
+    
+    CGFloat oldWidth   = CGRectGetWidth(frame);
+    CGFloat oldHeight  = CGRectGetHeight(frame);
+    
+    CGFloat centerX    = oldOriginX + (oldWidth  / 2.0);
+    CGFloat centerY    = oldOriginY + (oldHeight / 2.0);
+    
+    CGFloat newWidth   = oldWidth  * scale;
+    CGFloat newHeight  = oldHeight * scale;
+    
+    CGFloat newOriginX = centerX - (newWidth  / 2.0);
+    CGFloat newOriginY = centerY - (newHeight / 2.0);
+    
+    CGRect potentialNewFrame = CGRectMake(newOriginX, newOriginY, newWidth, newHeight);
     
     if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
         toolbar.frame = potentialNewFrame;
